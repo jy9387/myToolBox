@@ -17,6 +17,8 @@ class Layer(object):
             return idx_bottom_start, idx_bottom_end
 
 
+re_comma = re.compile(r'[\s\,]+')
+
 layer_params = raw_input('please enter the primary parameters of the toppest level with format like: layer_type, kernel_h, stride_h, pad_h_top, idx_start, idx_end\n')
 layer_params = re.split(r'[\s\,]+', layer_params)
 layer = Layer(layer_params[0], layer_params[1], layer_params[2], layer_params[3], layer_params[4], layer_params[5])
@@ -24,7 +26,7 @@ while(1):
     idx_bottom_start, idx_bottom_end = layer.get_bottom_idx()
     print 'the receptive field is between:', idx_bottom_start, 'and', idx_bottom_end
     layer_params = raw_input('please enter the parameters of the bottom level with format like: layer_type, kernel_h, stride_h, pad_h_top\n')
-    layer_params = re.split(r'[\s\,]+', layer_params)
+    layer_params = re.split(re_comma, layer_params)
     try:
         layer = Layer(layer_params[0], layer_params[1], layer_params[2], layer_params[3], idx_bottom_start, idx_bottom_end)
     except IndexError, e:
