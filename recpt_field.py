@@ -1,5 +1,7 @@
 #-*-coding:utf-8-*-
+from __future__ import division
 import re
+
 
 class Layer(object):
     """docstring for Layer"""
