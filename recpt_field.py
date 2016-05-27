@@ -11,8 +11,12 @@ class Layer(object):
         self.idx_start = int(idx_start)
         self.idx_end = int(idx_end)
     def get_bottom_idx(self):
-        idx_bottom_start = 1 + self.stride_h * (self.idx_start - 1) - self.pad_h_top
-        idx_bottom_end = self.kernel_h + self.stride_h * (self.idx_end - 1) - self.pad_h_top
+        if self.stride_h % 2 == 0:
+            idx_bottom_start = self.stride_h * self.idx_start - self.pad_h_top
+            idx_bottom_end = (self.stride_h * self.idx_end - self.pad_h_top) + self.kernel_h - 1
+        else:
+            idx_bottom_start = 1 + self.stride_h * (self.idx_start - 1) - self.pad_h_top
+            idx_bottom_end = self.kernel_h + self.stride_h * (self.idx_end - 1) - self.pad_h_top
         return idx_bottom_start, idx_bottom_end
 
 
