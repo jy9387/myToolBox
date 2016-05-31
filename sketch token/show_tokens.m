@@ -25,13 +25,14 @@ layer_idx = [2, 5, 9, 13, 17];
 
 [~, rcpt_size] = rcpt_field_back(params_model, [321, 481]);
 patches_size = rcpt_size(layer_idx);
+max_sampled = 10e3;
 
-
-for c = 1:length(layer_idx)
+for c = length(layer_idx):-1:1
     %% for the c_th layer:
     disp(['----------starting extracting patches: layer ', num2str(c), '----------']);
-    load([cluster_root, '/', num2str(c), '_clustered.mat']);
+    load([cluster_root, '/', num2str(c), '_pruned.mat']);
     load([cluster_root, '/', num2str(c), '_feats.mat']);
+    IDX = IDX_new; codebook = codebook_new;
     IDX_unq = unique(IDX);
     patch_size = int32([patches_size(c), patches_size(c)]);
     
@@ -43,6 +44,13 @@ for c = 1:length(layer_idx)
         %% for the i_th clustered center:
 %         IDX_tmp = IDX(IDX == IDX_unq(i));
         rc_pos_tmp = rc_pos_full(IDX == IDX_unq(i), :);
+        feat_pos_tmp = feat_pos_full(IDX == IDX_unq(i), :);
+        target = (codebook(IDX_unq(i), :))';
+        
+        error = sum(bsxfun(@minus, target, feat_pos_tmp').^2,1);
+        [sort_value, sort_idx] = sort(error, 'ascend');
+        rc_pos_tmp = rc_pos_tmp(sort_idx(1:min(max_sampled, size(sort_idx, 2))), :);
+        
         rc_token = rc_pos_tmp(:, 3:4);
         rc_img_idx = rc_pos_tmp(:, 5);
         
