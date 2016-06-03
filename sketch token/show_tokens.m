@@ -2,6 +2,7 @@ clear;
 
 cluster_root = '../../data/clustered/test_and_val/';
 gt_root = '../../data/groundTruth/test_and_val/';
+img_root = '../../data/images/test_and_val/';
 save_root = '../../data/sketch_tokens/test_and_val/';
 
 params_model = [0,3,1,35;...
@@ -25,14 +26,14 @@ layer_idx = [2, 5, 9, 13, 17];
 
 [~, rcpt_size] = rcpt_field_back(params_model, [321, 481]);
 patches_size = rcpt_size(layer_idx);
-max_sampled = 10e3;
+max_sampled = 100;
 
 for c = length(layer_idx):-1:1
     %% for the c_th layer:
     disp(['----------starting extracting patches: layer ', num2str(c), '----------']);
-    load([cluster_root, '/', num2str(c), '_pruned.mat']);
+    load([cluster_root, '/', num2str(c), '_clustered.mat']);
     load([cluster_root, '/', num2str(c), '_feats.mat']);
-    IDX = IDX_new; codebook = codebook_new;
+%     IDX = IDX_new; codebook = codebook_new;
     IDX_unq = unique(IDX);
     patch_size = int32([patches_size(c), patches_size(c)]);
     
@@ -55,7 +56,7 @@ for c = length(layer_idx):-1:1
         rc_img_idx = rc_pos_tmp(:, 5);
         
         save_patches_dir = fullfile(save_root_cth, 'patches', ['center_', num2str(IDX_unq(i))]);
-        patch_avrg = extr_token(rc_token, rc_img_idx, patch_size, gt_root, save_patches_dir);
+        patch_avrg = extr_token(rc_token, rc_img_idx, patch_size, gt_root, save_patches_dir, img_root);
         
         save_avrg_dir = fullfile(save_root_cth, 'avrg');
         if ~exist(save_avrg_dir, 'dir'), mkdir(save_avrg_dir); end;

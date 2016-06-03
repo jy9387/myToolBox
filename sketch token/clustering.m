@@ -9,7 +9,7 @@ layers = dir(feat_root);
 layers = {layers.name};
 layers = layers(3:end);
 num_layers = length(layers);
-k = [50 50 50 50 50];
+k = [50 75 100 125 150];
 
 for l = num_layers:-1:1
     %% loading features:
